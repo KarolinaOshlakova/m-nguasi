@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35219.272
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "mänguasi", "mänguasi.pyproj", "{7B3E4C5A-07A8-4B2D-A277-1B307ECA6D94}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B3E4C5A-07A8-4B2D-A277-1B307ECA6D94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B3E4C5A-07A8-4B2D-A277-1B307ECA6D94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3D3EA728-EDD8-4E43-8143-3AFDF99A0179}
+	EndGlobalSection
+EndGlobal
