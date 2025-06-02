@@ -13,20 +13,9 @@ font = pygame.font.SysFont(None, 36)
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-SKY_BLUE = (135, 206, 235)       # Голубое небо
-GRASS_GREEN = (34, 139, 34)      # Зеленая трава
 GROUND_HEIGHT = HEIGHT - 40
 
 star_width, star_height = 30, 30
-
-dino_img = pygame.image.load("dino.png")
-dino_img = pygame.transform.scale(dino_img, (100, 80))
-
-cactus_img = pygame.image.load("cactus.png")
-cactus_img = pygame.transform.scale(cactus_img, (40, 60))
-
-zvezda_img = pygame.image.load("svesda.png").convert_alpha()
-zvezda_img = pygame.transform.scale(zvezda_img, (star_width, star_height))
 
 dino_width, dino_height = 100, 80
 dino_x = 50
@@ -44,12 +33,12 @@ cactus_spawn_delay = 1500
 bird_width, bird_height = 30, 20
 bird_list = []
 bird_spawn_time = 0
-bird_spawn_delay = 10000  # Птицы реже (10-12 сек)
+bird_spawn_delay = 10000
 bird_fly_height = [GROUND_HEIGHT - 100, GROUND_HEIGHT - 150]
 
 star_list = []
 star_spawn_time = 0
-star_spawn_delay = 2000
+star_spawn_delay = 7000  
 
 speed = 10
 speed_increase_interval = 10000
@@ -59,13 +48,32 @@ score = 0
 stars_collected = 0
 game_over = False
 
+
+invincible = False
+invincible_start_time = 0
+invincible_duration = 5000
+
+
+kkk_img = pygame.image.load("kkk.png")
+kkk_img = pygame.transform.scale(kkk_img, (dino_width, dino_height))
+
+kk2_img = pygame.image.load("kk2.png")
+kk2_img = pygame.transform.scale(kk2_img, (dino_width, dino_height))
+
+cactus_img = pygame.image.load("cactus.png")
+cactus_img = pygame.transform.scale(cactus_img, (cactus_width, cactus_height))
+
+zvezda_img = pygame.image.load("svesda.png").convert_alpha()
+zvezda_img = pygame.transform.scale(zvezda_img, (star_width, star_height))
+
+
+fon_img = pygame.image.load("fon.png").convert_alpha()
+fon_img = pygame.transform.scale(fon_img, (WIDTH, HEIGHT))
+
+
 def draw_ground_and_background():
-    if score >= 5:
-        screen.fill(SKY_BLUE)
-        pygame.draw.rect(screen, GRASS_GREEN, (0, GROUND_HEIGHT, WIDTH, HEIGHT - GROUND_HEIGHT))
-    else:
-        screen.fill(WHITE)
-        pygame.draw.line(screen, BLACK, (0, GROUND_HEIGHT), (WIDTH, GROUND_HEIGHT), 3)
+    screen.blit(fon_img, (0, 0)) 
+
 
 while True:
     if game_over:
@@ -95,6 +103,8 @@ while True:
                 speed = 10
                 last_speed_increase = pygame.time.get_ticks()
                 game_over = False
+                invincible = False
+                invincible_start_time = 0
         continue
 
     clock.tick(60)
@@ -119,9 +129,11 @@ while True:
         on_ground = True
 
     dino_rect = pygame.Rect(dino_x, dino_y, dino_width, dino_height)
-    screen.blit(dino_img, (dino_x, dino_y))
 
     now = pygame.time.get_ticks()
+
+    if invincible and now - invincible_start_time > invincible_duration:
+        invincible = False
 
     if now - last_speed_increase > speed_increase_interval:
         speed += 1
@@ -139,14 +151,14 @@ while True:
         bird_y = random.choice(bird_fly_height)
         bird_list.append(pygame.Rect(bird_x, bird_y, bird_width, bird_height))
         bird_spawn_time = now
-        bird_spawn_delay = random.randint(7000, 12000)  # птицы реже
+        bird_spawn_delay = random.randint(7000, 12000)
 
     if now - star_spawn_time > star_spawn_delay:
         star_x = WIDTH
         star_y = random.randint(GROUND_HEIGHT - 200, GROUND_HEIGHT - 100)
         star_list.append(pygame.Rect(star_x, star_y, star_width, star_height))
         star_spawn_time = now
-        star_spawn_delay = random.randint(1500, 3000)
+        star_spawn_delay = random.randint(6000, 9000)
 
     for cactus in cactus_list[:]:
         cactus.x -= speed
@@ -155,7 +167,8 @@ while True:
             score += 1
         screen.blit(cactus_img, (cactus.x, cactus.y))
         if dino_rect.colliderect(cactus):
-            game_over = True
+            if not invincible:
+                game_over = True
 
     for bird in bird_list[:]:
         bird.x -= speed + 2
@@ -164,7 +177,8 @@ while True:
             score += 1
         pygame.draw.rect(screen, (150, 0, 0), bird)
         if dino_rect.colliderect(bird):
-            game_over = True
+            if not invincible:
+                game_over = True
 
     for star in star_list[:]:
         star.x -= speed
@@ -174,6 +188,14 @@ while True:
         if dino_rect.colliderect(star):
             stars_collected += 1
             star_list.remove(star)
+            invincible = True
+            invincible_start_time = now
+
+
+    if invincible:
+        screen.blit(kk2_img, (dino_x, dino_y))
+    else:
+        screen.blit(kkk_img, (dino_x, dino_y))
 
     score_display = font.render(f"Skoor: {score}  Tähed: {stars_collected}", True, BLACK)
     screen.blit(score_display, (10, 10))
